@@ -1,6 +1,7 @@
 #include<iostream>
 #include<cstring>
 #include<fstream>
+#include<ctype.h>
 #include<map>
 using namespace std;
 //定义类 
@@ -54,7 +55,7 @@ void countFile::countLine(string str){
 	while(cut!=NULL){
 		//cout<<cut<<endl;
 		if(strcmp(cut,"\n")!=0){
-			cut=strtok(NULL," ");	
+			cut=strtok(NULL,"\n");	
 			lines++;
 		}
 		
@@ -75,7 +76,7 @@ void countFile::countWord(string str){
 		}
 	}
 	
-	for(int i=0;i<str.length();i++){
+	for(int i=0;i<str.length()-3;i++){
 		//跳过非字母和非数字字符
 		while(i<str.length() && !isdigit(str[i]) && !islower(str[i])){ 
 			i++;
@@ -85,14 +86,14 @@ void countFile::countWord(string str){
 		bool flag=true;	//判断是否符合四个字母开头 
 		
 		for(int j=0;j<4;j++){
-			if(!islower(str.at(i+j))){
+			if(!islower(str[i+j])){
 				flag=false;
 				break;
 			}
 		}
 		if(flag){
 			for(int j=0;j<4;j++){
-				temp.append(1,str.at(i+j));
+				temp.append(1,str[i+j]);
 			}
 			i+=4;
 			while(i<str.length() && isdigit(str[i]) || islower(str[i])){
