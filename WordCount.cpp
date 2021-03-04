@@ -1,7 +1,6 @@
 #include<iostream>
 #include<cstring>
 #include<fstream>
-#include<ctype.h>
 #include<map>
 using namespace std;
 //定义类 
