@@ -1,16 +1,20 @@
 #include<iostream>
 #include<cstring>
 #include<fstream>
+#include<ctype.h>
+#include<map>
 using namespace std;
-//¶¨ÒåÀà 
+//å®šä¹‰ç±» 
+map<string,int> mapWord;
 class countFile{
 	public:
-		//³õÊ¼»¯ 
+		//åˆå§‹åŒ– 
 		//void init();
 		string getString(ifstream& in);
-		//×Ö·ûºÍĞĞÍ³¼ÆÊı 
-		int countChara(string str);
-		int countLine(string str);
+		//å­—ç¬¦å’Œè¡Œç»Ÿè®¡æ•° 
+		void countChara(string str);
+		void countLine(string str);
+		void countWord(string str);
 		/*
 	private:
 		int chara;
@@ -26,21 +30,21 @@ void init(){
 */
 string countFile::getString(ifstream& in){
 	char ch;
-	//ÎÄ±¾ÄÚÈİ×÷Îª×Ö·û´®´æ´¢
+	//æ–‡æœ¬å†…å®¹ä½œä¸ºå­—ç¬¦ä¸²å­˜å‚¨
 	string str; 
 	while((ch=in.get())!=EOF){
-		//asiiÂë×Ö·û·¶Î§ 
+		//asiiç å­—ç¬¦èŒƒå›´ 
 		if(ch>0&&ch<=127){
 			str.append(1,ch);
 		}
 	}
 	return str;
 }
-int countFile::countChara(string str){
+void countFile::countChara(string str){
 	cout<<"character:"<< str.length()<<endl;
 }
-int countFile::countLine(string str){
-	//Ğè×ª»»string->char [] 
+void countFile::countLine(string str){
+	//éœ€è½¬æ¢string->char [] 
 	//const char* p=str.data();
 	int lines=0;
 	char p[10000];
@@ -63,15 +67,58 @@ int countFile::countLine(string str){
 	*/
 }
 
+void countFile::countWord(string str){
+	int word=0;
+    //å­—æ¯å¤§å†™->å°å†™ 
+    for(int i=0;i<str.length();i++){
+    	if(str[i]>=65&&str[i]<=90){
+    		str[i]+=32;
+		}
+	}
+	
+	for(int i=0;i<str.length();i++){
+		//è·³è¿‡éå­—æ¯å’Œéæ•°å­—å­—ç¬¦
+		while(i<str.length() && !isdigit(str[i]) && !islower(str[i])){ 
+			i++;
+		} 
+		
+    	string temp;//å­˜å‚¨åˆç†å•è¯ 
+		bool flag=true;	//åˆ¤æ–­æ˜¯å¦ç¬¦åˆå››ä¸ªå­—æ¯å¼€å¤´ 
+		
+		for(int j=0;j<4;j++){
+			if(!islower(str.at(i+j))){
+				flag=false;
+				break;
+			}
+		}
+		if(flag){
+			for(int j=0;j<4;j++){
+				temp.append(1,str.at(i+j));
+			}
+			i+=4;
+			while(i<str.length() && isdigit(str[i]) || islower(str[i])){
+				temp.append(1,str[i]);
+				i++; 
+			} 
+			mapWord[temp]++;
+			word++;
+		}
+	}
+	cout<<"words:"<<word<<endl;	
+}
+
+    
+
 int main(int argc,char* argv[]){
 	countFile CF;
-	//´ò¿ª¶ÁĞ´Á½ÎÄ¼ş 
+	//æ‰“å¼€è¯»å†™ä¸¤æ–‡ä»¶ 
 	ifstream in;
 	in.open(argv[1]);
 	string s=CF.getString(in);
-	// ×Ö·ûÊıºÍĞĞÊı
+	// å­—ç¬¦æ•°å’Œè¡Œæ•°
 	CF.countChara(s);
 	CF.countLine(s);
+	CF.countWord(s);
 	/* 
 	ofstream out;
 	out.open(argv[2]); 
@@ -80,4 +127,3 @@ int main(int argc,char* argv[]){
 	
 	 
 }
-
