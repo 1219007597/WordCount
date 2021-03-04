@@ -5,7 +5,7 @@
 #include<map>
 using namespace std;
 //定义类 
-map<string,int> mapWord;
+map<string,int> mp;
 class countFile{
 	public:
 		//初始化 
@@ -15,6 +15,8 @@ class countFile{
 		void countChara(string str);
 		void countLine(string str);
 		void countWord(string str);
+		void getSort(map<string,int> map);
+		
 		/*
 	private:
 		int chara;
@@ -100,13 +102,24 @@ void countFile::countWord(string str){
 				temp.append(1,str[i]);
 				i++; 
 			} 
-			mapWord[temp]++;
+			mp[temp]++;
 			word++;
 		}
 	}
 	cout<<"words:"<<word<<endl;	
 }
 
+vector<pair<int,string> > countFile::getSort()
+{
+	map<string, int>::iterator it;
+	vector<pair<int, string> > ve;
+	for (it=mp.begin(); it!=mp.end(); it++)
+	{
+		ve.push_back(make_pair(it->second,it->first));
+	}
+	sort(ve.begin(), ve.end(),cmp);
+	return ve;
+}
     
 
 int main(int argc,char* argv[]){
@@ -123,6 +136,10 @@ int main(int argc,char* argv[]){
 	ofstream out;
 	out.open(argv[2]); 
 	*/ 
+	vector<pair<int,string>> v=CF.getSort();
+	for(int i=0;i<10;i++){
+		cout<<v[i].second<<":"<<v[i].first<<endl;
+	}
 	
 	
 	 
