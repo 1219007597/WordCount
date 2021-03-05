@@ -9,18 +9,26 @@
 #include<algorithm>
 using namespace std;
 //定义类 
-map<string,int> mp;
+
 class countFile{
 	public:
 		//初始化 
 		//void init();
+		// 
 		string getString(ifstream& in);
+		void loadMap(string str); 
 		//字符和行统计数 
 		void countChara(string str,ofstream& out);
 		void countLine(string str,ofstream& out);
-		void countWord(string str,ofstream& out);
+		void countWord(ofstream& out);
 		//利用向量排序 
 		vector<pair<int,string> > getSort();
+	
+	private:
+		//ifstream in;
+		//ofstream out;
+		map<string,int>	mp;
+		
 }; 
 
 string countFile::getString(ifstream& in){
@@ -63,8 +71,7 @@ void countFile::countLine(string str,ofstream& out){
 	out<<"lines: "<<lines<<endl;
 }
 
-void countFile::countWord(string str,ofstream& out){
-	int word=0;
+void countFile::loadMap(string str){
     
 	for(int i=0;i<str.length()-3;i++){
 		//跳过非字母和非数字字符
@@ -91,10 +98,8 @@ void countFile::countWord(string str,ofstream& out){
 				i++; 
 			} 
 			mp[temp]++;
-			word++;
 		}
 	}
-	out<<"words: "<<word<<endl;	
 }
 
 bool cmp(pair<int, string> a, pair<int, string> b)
@@ -116,24 +121,42 @@ vector<pair<int,string> > countFile::getSort()
 	return ve;
 }
 
-
+void countFile::countWord(ofstream& out){
+	int word=0;
+	map<string, int>::iterator it;
+	for (it=mp.begin(); it!=mp.end(); it++)
+	{
+		word+=it->second;
+	}
+	out<<"words: "<<word<<endl;
+}
     
 
 int main(int argc,char* argv[]){
 	
 	countFile CF;
 	//打开读写两文件 
+	
+	if (!argv[1] ) {
+		cout << "Please enter read file!";
+		return 0;
+	}
+	if(!argv[2]){
+		cout << "Please enter write files";
+		return 0;
+	}
 	ifstream in;
 	in.open(argv[1]);
 	string s=CF.getString(in);
+	CF.loadMap(s);
 	
 	ofstream out;
 	out.open(argv[2]);
 	
 	// 字符数和行数
 	CF.countChara(s,out);
+	CF.countWord(out);
 	CF.countLine(s,out);
-	CF.countWord(s,out);
 	vector<pair<int,string> > v=CF.getSort();
 	for(int i=0;i<10;i++){
 		out<<v[i].second<<" :"<<v[i].first<<endl;
