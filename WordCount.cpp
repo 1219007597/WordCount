@@ -33,56 +33,39 @@ string countFile::getString(ifstream& in){
 			str.append(1,ch);
 		}
 	}
-	return str;
-}
-void countFile::countChara(string str,ofstream& out){
-	out<<"character: "<< str.length()<<endl;
-}
-void countFile::countLine(string str,ofstream& out){
-	//需转换string->char [] 
-	//const char* p=str.data();
-	
-	int lines=0;/*
-	char p[1000000];
-	for(int i=0;i<str.length();i++){
-		p[i]=str[i];
-	}
-	char* cut=strtok(p," ");
-	while(cut!=NULL){
-		//cout<<cut<<endl;
-		if(strcmp(cut,"\n")!=0){
-			cut=strtok(NULL,"\n");	
-			lines++;
-		}
-		
-	}
-	*/
-	string s;
-	//字母大写->小写 
-    for(int i=0;i<str.length();i++){
-		if(str[i]!='\n'){
-			s+=str[i];
-		}
-		else{
-			
-		}
-	}
-	cout<<"lines:"<<lines<<endl;
-	/*
-	for(int i=0;i<str.length();i++){
-	}
-	*/
-}
-
-void countFile::countWord(string str,ofstream& out){
-	int word=0;
-    
 	//字母大写->小写 
     for(int i=0;i<str.length();i++){
     	if(str[i]>=65&&str[i]<=90){
     		str[i]+=32;
 		}
 	}
+	return str;
+}
+void countFile::countChara(string str,ofstream& out){
+	out<<"character: "<< str.length()<<endl;
+}
+void countFile::countLine(string str,ofstream& out){
+	int lines=0;
+	
+	string s;
+    for(int i=0;i<str.length();i++){
+		if(str[i]!='\n'){
+			if(isdigit(str[i]) || islower(str[i]))
+			s+=str[i];
+		}
+		else{
+			if(s!=""){
+				lines++;
+				s="";
+			}
+		}
+	}
+	out<<"lines: "<<lines<<endl;
+}
+
+void countFile::countWord(string str,ofstream& out){
+	int word=0;
+    
 	for(int i=0;i<str.length()-3;i++){
 		//跳过非字母和非数字字符
 		while(i<str.length() && !isdigit(str[i]) && !islower(str[i])){ 
@@ -137,6 +120,7 @@ vector<pair<int,string> > countFile::getSort()
     
 
 int main(int argc,char* argv[]){
+	
 	countFile CF;
 	//打开读写两文件 
 	ifstream in;
@@ -148,7 +132,7 @@ int main(int argc,char* argv[]){
 	
 	// 字符数和行数
 	CF.countChara(s,out);
-	//CF.countLine(s);
+	CF.countLine(s,out);
 	CF.countWord(s,out);
 	vector<pair<int,string> > v=CF.getSort();
 	for(int i=0;i<10;i++){
